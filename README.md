@@ -34,5 +34,13 @@ Schema for players table (you may add additional fields as needed):
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#Install
-     npm install
+# Solution 
+
+## install
+   *  npm install
+   *  composer install
+   
+## Usage 
+     Create a Database named laravel
+     
+     
