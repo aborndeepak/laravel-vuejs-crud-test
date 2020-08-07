@@ -17,6 +17,7 @@ class CreatePlayersTable extends Migration
             $table->increments('id');
             $table->string('first_name', 100);
             $table->string('last_name', 100);
+            $table->integer('team_id');
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
         });

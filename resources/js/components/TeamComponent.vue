@@ -20,8 +20,9 @@
                                         <input type="text" @keydown.space="preventLeadingSpace" name="team_name" id="team_name" required class="form-control" placeholder="Team name...." v-model="team.name"/>
                                         <label class="text-danger" v-if="err_msg">{{err_msg}}</label>
                                     </div>
-                                    <div class="form-group col-4 h-100 d-table">
-                                        <input type="submit" name="btnAddTeam" value="Add New Team" class="btn btn-primary btn-sm align-middle"/>
+                                    <div class="form-group col-4">
+                                        <br>
+                                        <input type="submit" name="btnAddTeam" value="Add New Team" class="btn btn-primary btn-sm align-middle mt-2"/>
                                     </div>
                                 </div>
                             </form>
@@ -55,7 +56,7 @@
                                      <form @submit.prevent="addPlayer">
                                             <div v-bind:class="{ succmsg: succmsg }">
                                                 <div class="form-group">
-                                                    <div class="alert alert-success">Player created successfully</div>
+                                                    <div class="alert alert-success">{{res_msg}}</div>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -67,8 +68,8 @@
                                                     <label for="p_first_name">Last Name</label>
                                                     <input type="text" name="p_last_name"  @keydown.space="preventLeadingSpace" id="p_last_name" required class="form-control" placeholder="Last name...." v-model="player.last_name"/>
                                                 </div>
-                                                <div class="form-group col-4">
-                                                    <input type="submit" name="btnAddPlayer" value="Add Player" class="btn btn-primary btn-sm"/>
+                                                <div class="form-group col-4"><br>
+                                                    <input type="submit" name="btnAddPlayer" value="Add Player" class="btn btn-primary btn-sm mt-2"/>
                                                 </div>
                                             </div>
                                      </form>
@@ -85,7 +86,7 @@
                                                         <tr v-for="player in players">
                                                             <td>{{player.first_name}}</td>
                                                             <td>{{player.last_name}}</td>
-                                                            <td><button class="btn btn-sm btn-info" v-on:click="update_player(player.id)" data-toggle="modal" data-target="#updatePlayer">Update</button></td>
+                                                            <td><button class="btn btn-sm btn-info" v-on:click="edit_player(player.first_name,player.id,player.last_name)" data-toggle="modal" data-target="#updatePlayer">Update</button></td>
                                                         </tr>
                                                   </template>
                                                   <template v-if="!players">
@@ -99,7 +100,7 @@
                          </div>
                     </div>
 
-                    <div class="modal fade" id="updatePlayer" tabindex="-1" role="dialog" aria-labelledby="updatePlayerTitle" aria-hidden="true">
+                    <div class="modal fade" id="updatePlayer" tabindex="-1" role="dialog" aria-labelledby="updatePlayerTitle" aria-hidden="true" v-if="show_modal">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
                             <div class="modal-header">
@@ -149,6 +150,7 @@ import axios from 'axios'
         name:"team_data", 
         data () {
             return {
+                show_modal:false,
                 team_list:[],
                 team:{
                       'name':''
@@ -163,10 +165,11 @@ import axios from 'axios'
                 tmp_player:{
                       'first_name':'',
                       'last_name':'',
-                      'team_id':'',
+                      'player_id':'',
                 },
                 succmsg:  true,
                 err_msg  : '',
+                res_msg : '',
                 view_team:true,
                 team_details:false
             }
@@ -210,8 +213,31 @@ import axios from 'axios'
                          alert(e)
                     })
             },
+            edit_player(first_name,player_id,last_name){
+                this.show_modal = true;
+                this.tmp_player.player_id= player_id;
+                this.tmp_player.first_name = first_name;
+                this.tmp_player.last_name = last_name;
+            },
+
             updatePlayer(){
-                alert();
+                axios.put(`/api/players/${this.tmp_player.player_id}`, {
+                        first_name: this.tmp_player.first_name,
+                        last_name: this.tmp_player.last_name,
+                        player_id : this.tmp_player.player_id
+                    })
+                    .then(response => {
+                          this.succmsg = false;
+                          this.res_msg = "Player updated successfully!";
+                          this.view_team_details(this.player.team_id);
+                          this.show_modal = false;
+                          this.tmp_player.player_id= '';
+                          this.tmp_player.first_name = '';
+                          this.tmp_player.last_name = '';
+                    })
+                    .catch(e => {
+                         alert(e)
+                    })
             },
             async fetchData() {
                   await axios.get('/api/teams')
@@ -230,7 +256,6 @@ import axios from 'axios'
                   if(team_name){
                     this.team.name = team_name;
                   }
-                  
                   this.player.team_id = team_id;
                   await axios.get(`/api/players/${team_id}`)
                     .then(response => {
@@ -247,6 +272,7 @@ import axios from 'axios'
                   this.player.team_id = '';
                   this.view_team =  true;
                   this.team_details = false;
+                  this.err_msg = false;
             },
              preventLeadingSpace(e) {
                 if (!e.target.value) e.preventDefault();

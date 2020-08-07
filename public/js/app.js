@@ -2175,11 +2175,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "team_data",
   data: function data() {
     return {
+      show_modal: false,
       team_list: [],
       team: {
         'name': ''
@@ -2194,10 +2196,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       tmp_player: {
         'first_name': '',
         'last_name': '',
-        'team_id': ''
+        'player_id': ''
       },
       succmsg: true,
       err_msg: '',
+      res_msg: '',
       view_team: true,
       team_details: false
     };
@@ -2245,11 +2248,35 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         alert(e);
       });
     },
+    edit_player: function edit_player(first_name, player_id, last_name) {
+      this.show_modal = true;
+      this.tmp_player.player_id = player_id;
+      this.tmp_player.first_name = first_name;
+      this.tmp_player.last_name = last_name;
+    },
     updatePlayer: function updatePlayer() {
-      alert();
+      var _this3 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.put("/api/players/".concat(this.tmp_player.player_id), {
+        first_name: this.tmp_player.first_name,
+        last_name: this.tmp_player.last_name,
+        player_id: this.tmp_player.player_id
+      }).then(function (response) {
+        _this3.succmsg = false;
+        _this3.res_msg = "Player updated successfully!";
+
+        _this3.view_team_details(_this3.player.team_id);
+
+        _this3.show_modal = false;
+        _this3.tmp_player.player_id = '';
+        _this3.tmp_player.first_name = '';
+        _this3.tmp_player.last_name = '';
+      })["catch"](function (e) {
+        alert(e);
+      });
     },
     fetchData: function fetchData() {
-      var _this3 = this;
+      var _this4 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
@@ -2258,7 +2285,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 0:
                 _context.next = 2;
                 return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/teams').then(function (response) {
-                  _this3.team_list = response.data.data;
+                  _this4.team_list = response.data.data;
                 })["catch"](function (resp) {
                   console.log(resp);
                   alert("Could not load teams");
@@ -2274,24 +2301,24 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     //API endpoint to get a team and its players 
     view_team_details: function view_team_details(team_id, team_name) {
-      var _this4 = this;
+      var _this5 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                _this4.view_team = false;
-                _this4.team_details = true;
+                _this5.view_team = false;
+                _this5.team_details = true;
 
                 if (team_name) {
-                  _this4.team.name = team_name;
+                  _this5.team.name = team_name;
                 }
 
-                _this4.player.team_id = team_id;
+                _this5.player.team_id = team_id;
                 _context2.next = 6;
                 return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get("/api/players/".concat(team_id)).then(function (response) {
-                  _this4.players = response.data;
+                  _this5.players = response.data;
                 })["catch"](function (resp) {
                   console.log(resp);
                   alert("Could not load teams details");
@@ -2311,6 +2338,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.player.team_id = '';
       this.view_team = true;
       this.team_details = false;
+      this.err_msg = false;
     },
     preventLeadingSpace: function preventLeadingSpace(e) {
       if (!e.target.value) e.preventDefault();else if (e.target.value[0] == ' ') e.target.value = e.target.value.replace(/^\s*/, "");
@@ -40312,7 +40340,13 @@ var render = function() {
                         },
                         [
                           _c("div", { class: { succmsg: _vm.succmsg } }, [
-                            _vm._m(4)
+                            _c("div", { staticClass: "form-group" }, [
+                              _c(
+                                "div",
+                                { staticClass: "alert alert-success" },
+                                [_vm._v(_vm._s(_vm.res_msg))]
+                              )
+                            ])
                           ]),
                           _vm._v(" "),
                           _c("div", { staticClass: "row" }, [
@@ -40422,13 +40456,13 @@ var render = function() {
                               })
                             ]),
                             _vm._v(" "),
-                            _vm._m(5)
+                            _vm._m(4)
                           ])
                         ]
                       ),
                       _vm._v(" "),
                       _c("table", { staticClass: "table table-bordered" }, [
-                        _vm._m(6),
+                        _vm._m(5),
                         _vm._v(" "),
                         _c(
                           "tbody",
@@ -40455,8 +40489,10 @@ var render = function() {
                                           },
                                           on: {
                                             click: function($event) {
-                                              return _vm.update_player(
-                                                player.id
+                                              return _vm.edit_player(
+                                                player.first_name,
+                                                player.id,
+                                                player.last_name
                                               )
                                             }
                                           }
@@ -40468,7 +40504,7 @@ var render = function() {
                                 })
                               : _vm._e(),
                             _vm._v(" "),
-                            !_vm.players ? [_vm._m(7)] : _vm._e()
+                            !_vm.players ? [_vm._m(6)] : _vm._e()
                           ],
                           2
                         )
@@ -40478,158 +40514,168 @@ var render = function() {
                 ])
               : _vm._e(),
             _vm._v(" "),
-            _c(
-              "div",
-              {
-                staticClass: "modal fade",
-                attrs: {
-                  id: "updatePlayer",
-                  tabindex: "-1",
-                  role: "dialog",
-                  "aria-labelledby": "updatePlayerTitle",
-                  "aria-hidden": "true"
-                }
-              },
-              [
-                _c(
+            _vm.show_modal
+              ? _c(
                   "div",
                   {
-                    staticClass: "modal-dialog modal-dialog-centered",
-                    attrs: { role: "document" }
+                    staticClass: "modal fade",
+                    attrs: {
+                      id: "updatePlayer",
+                      tabindex: "-1",
+                      role: "dialog",
+                      "aria-labelledby": "updatePlayerTitle",
+                      "aria-hidden": "true"
+                    }
                   },
                   [
-                    _c("div", { staticClass: "modal-content" }, [
-                      _vm._m(8),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "modal-body" }, [
-                        _c(
-                          "form",
-                          {
-                            on: {
-                              submit: function($event) {
-                                $event.preventDefault()
-                                return _vm.updatePlayer($event)
-                              }
-                            }
-                          },
-                          [
-                            _c("div", { staticClass: "form-group" }, [
-                              _c("label", { attrs: { for: "first_name" } }, [
-                                _vm._v("First Name")
-                              ]),
-                              _vm._v(" "),
-                              _c("input", {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: _vm.tmp_player.first_name,
-                                    expression: "tmp_player.first_name"
-                                  }
-                                ],
-                                staticClass: "form-control",
-                                attrs: {
-                                  type: "text",
-                                  name: "first_name",
-                                  id: "first_name",
-                                  required: "",
-                                  placeholder: "First name...."
-                                },
-                                domProps: { value: _vm.tmp_player.first_name },
+                    _c(
+                      "div",
+                      {
+                        staticClass: "modal-dialog modal-dialog-centered",
+                        attrs: { role: "document" }
+                      },
+                      [
+                        _c("div", { staticClass: "modal-content" }, [
+                          _vm._m(7),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "modal-body" }, [
+                            _c(
+                              "form",
+                              {
                                 on: {
-                                  keydown: function($event) {
-                                    if (
-                                      !$event.type.indexOf("key") &&
-                                      _vm._k(
-                                        $event.keyCode,
-                                        "space",
-                                        32,
-                                        $event.key,
-                                        [" ", "Spacebar"]
-                                      )
-                                    ) {
-                                      return null
-                                    }
-                                    return _vm.preventLeadingSpace($event)
-                                  },
-                                  input: function($event) {
-                                    if ($event.target.composing) {
-                                      return
-                                    }
-                                    _vm.$set(
-                                      _vm.tmp_player,
-                                      "first_name",
-                                      $event.target.value
-                                    )
+                                  submit: function($event) {
+                                    $event.preventDefault()
+                                    return _vm.updatePlayer($event)
                                   }
                                 }
-                              })
-                            ]),
-                            _vm._v(" "),
-                            _c("div", { staticClass: "form-group" }, [
-                              _c("label", { attrs: { for: "first_name" } }, [
-                                _vm._v("Last Name")
-                              ]),
-                              _vm._v(" "),
-                              _c("input", {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: _vm.tmp_player.last_name,
-                                    expression: "tmp_player.last_name"
-                                  }
-                                ],
-                                staticClass: "form-control",
-                                attrs: {
-                                  type: "text",
-                                  name: "last_name",
-                                  id: "last_name",
-                                  required: "",
-                                  placeholder: "Last name...."
-                                },
-                                domProps: { value: _vm.tmp_player.last_name },
-                                on: {
-                                  keydown: function($event) {
-                                    if (
-                                      !$event.type.indexOf("key") &&
-                                      _vm._k(
-                                        $event.keyCode,
-                                        "space",
-                                        32,
-                                        $event.key,
-                                        [" ", "Spacebar"]
-                                      )
-                                    ) {
-                                      return null
+                              },
+                              [
+                                _c("div", { staticClass: "form-group" }, [
+                                  _c(
+                                    "label",
+                                    { attrs: { for: "first_name" } },
+                                    [_vm._v("First Name")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.tmp_player.first_name,
+                                        expression: "tmp_player.first_name"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    attrs: {
+                                      type: "text",
+                                      name: "first_name",
+                                      id: "first_name",
+                                      required: "",
+                                      placeholder: "First name...."
+                                    },
+                                    domProps: {
+                                      value: _vm.tmp_player.first_name
+                                    },
+                                    on: {
+                                      keydown: function($event) {
+                                        if (
+                                          !$event.type.indexOf("key") &&
+                                          _vm._k(
+                                            $event.keyCode,
+                                            "space",
+                                            32,
+                                            $event.key,
+                                            [" ", "Spacebar"]
+                                          )
+                                        ) {
+                                          return null
+                                        }
+                                        return _vm.preventLeadingSpace($event)
+                                      },
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.tmp_player,
+                                          "first_name",
+                                          $event.target.value
+                                        )
+                                      }
                                     }
-                                    return _vm.preventLeadingSpace($event)
-                                  },
-                                  input: function($event) {
-                                    if ($event.target.composing) {
-                                      return
+                                  })
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "form-group" }, [
+                                  _c(
+                                    "label",
+                                    { attrs: { for: "first_name" } },
+                                    [_vm._v("Last Name")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.tmp_player.last_name,
+                                        expression: "tmp_player.last_name"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    attrs: {
+                                      type: "text",
+                                      name: "last_name",
+                                      id: "last_name",
+                                      required: "",
+                                      placeholder: "Last name...."
+                                    },
+                                    domProps: {
+                                      value: _vm.tmp_player.last_name
+                                    },
+                                    on: {
+                                      keydown: function($event) {
+                                        if (
+                                          !$event.type.indexOf("key") &&
+                                          _vm._k(
+                                            $event.keyCode,
+                                            "space",
+                                            32,
+                                            $event.key,
+                                            [" ", "Spacebar"]
+                                          )
+                                        ) {
+                                          return null
+                                        }
+                                        return _vm.preventLeadingSpace($event)
+                                      },
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.tmp_player,
+                                          "last_name",
+                                          $event.target.value
+                                        )
+                                      }
                                     }
-                                    _vm.$set(
-                                      _vm.tmp_player,
-                                      "last_name",
-                                      $event.target.value
-                                    )
-                                  }
-                                }
-                              })
-                            ]),
-                            _vm._v(" "),
-                            _vm._m(9)
-                          ]
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _vm._m(10)
-                    ])
+                                  })
+                                ]),
+                                _vm._v(" "),
+                                _vm._m(8)
+                              ]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _vm._m(9)
+                        ])
+                      ]
+                    )
                   ]
                 )
-              ]
-            )
+              : _vm._e()
           ])
         ])
       ])
@@ -40662,9 +40708,11 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group col-4 h-100 d-table" }, [
+    return _c("div", { staticClass: "form-group col-4" }, [
+      _c("br"),
+      _vm._v(" "),
       _c("input", {
-        staticClass: "btn btn-primary btn-sm align-middle",
+        staticClass: "btn btn-primary btn-sm align-middle mt-2",
         attrs: { type: "submit", name: "btnAddTeam", value: "Add New Team" }
       })
     ])
@@ -40687,19 +40735,11 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group" }, [
-      _c("div", { staticClass: "alert alert-success" }, [
-        _vm._v("Player created successfully")
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c("div", { staticClass: "form-group col-4" }, [
+      _c("br"),
+      _vm._v(" "),
       _c("input", {
-        staticClass: "btn btn-primary btn-sm",
+        staticClass: "btn btn-primary btn-sm mt-2",
         attrs: { type: "submit", name: "btnAddPlayer", value: "Add Player" }
       })
     ])

@@ -8,6 +8,8 @@ use App\Player;
 
 class PlayersController extends Controller
 {
+     
+
     /**
      * Display a listing of the resource.
      *
@@ -55,7 +57,11 @@ class PlayersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $player = Player::findOrFail($id);
+        $player->first_name = $request->first_name;
+        $player->last_name = $request->last_name;
+        $player->save();
+        return new PlayersResource($player);
     }
 
     /**
