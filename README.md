@@ -31,3 +31,7 @@ Schema for players table (you may add additional fields as needed):
 * last_name
 * created_at
 * updated_at
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#Install
