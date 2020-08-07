@@ -17,6 +17,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+
+
+Route::get('/teams', 'TeamsController@index')->name('teams');
+Route::get('/players', 'PlayersController@index')->name('players');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

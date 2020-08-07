@@ -14,7 +14,19 @@
                         </div>
                     @endif
 
-                    {{ __('You are logged in!') }}
+                    <!-- {{ __('You are logged in!') }} -->
+    
+                    <div class="container">
+                        <div class="row">
+                             <div class="col-6">
+                                 <a href="{{url('/teams')}}">Teams</a>
+                             </div>
+                             <div class="col-6">
+                                <a href="{{url('/players')}}">Players</a>
+                             </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

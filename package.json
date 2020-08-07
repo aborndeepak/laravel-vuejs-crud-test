@@ -1,26 +1,35 @@
 {
-    "private": true,
-    "scripts": {
-        "dev": "npm run development",
-        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "watch": "npm run development -- --watch",
-        "watch-poll": "npm run watch -- --watch-poll",
-        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --disable-host-check --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "prod": "npm run production",
-        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
-    },
-    "devDependencies": {
-        "axios": "^0.19",
-        "bootstrap": "^4.0.0",
-        "cross-env": "^7.0",
-        "jquery": "^3.2",
-        "laravel-mix": "^5.0.1",
-        "lodash": "^4.17.13",
-        "popper.js": "^1.12",
-        "resolve-url-loader": "^2.3.1",
-        "sass": "^1.20.1",
-        "sass-loader": "^8.0.0",
-        "vue": "^2.5.17",
-        "vue-template-compiler": "^2.6.10"
-    }
+  "private": true,
+  "scripts": {
+    "dev": "npm run development",
+    "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --disable-host-check --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "prod": "npm run production",
+    "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch": "npm run development -- --watch",
+    "watch-poll": "npm run watch -- --watch-poll"
+  },
+  "dependencies": {
+    "bootstrap-vue": "^2.1.0",
+    "laravel-vue-pagination": "^2.3.1",
+    "vue-resource": "^1.5.1"
+  },
+  "devDependencies": {
+    "@babel/polyfill": "^7.7.0",
+    "axios": "^0.19",
+    "bootstrap": "^4.3.1",
+    "cross-env": "^7.0",
+    "jquery": "^3.2",
+    "laravel-mix": "^5.0.1",
+    "lodash": "^4.17.13",
+    "mutationobserver-shim": "^0.3.3",
+    "popper.js": "^1.12",
+    "portal-vue": "^2.1.6",
+    "resolve-url-loader": "^2.3.1",
+    "sass": "^1.20.1",
+    "sass-loader": "^8.0.0",
+    "vue": "^2.5.17",
+    "vue-cli-plugin-bootstrap-vue": "~0.6.0",
+    "vue-template-compiler": "^2.6.10"
+  }
 }
